@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { getNode, Node } from '../fs'
+import { FileIcon, FolderIcon } from '../icons'
 
 export function Files() {
   const [p, setP] = useState(['home', 'user'])
@@ -20,7 +21,7 @@ export function Files() {
           return (
             <button key={k} onClick={() => setSel(k)} onDoubleClick={() => { if (dir) { setP([...p, k]); setSel(null) } }}
               className={`flex flex-col items-center gap-1 rounded p-2 text-xs hover:bg-white/10 ${sel === k ? 'bg-white/15' : ''}`}>
-              <span className="text-3xl">{dir ? '📁' : '📄'}</span><span className="w-full truncate">{k}</span>
+              {dir ? <FolderIcon /> : <FileIcon />}<span className="w-full truncate">{k}</span>
             </button>
           )
         })}

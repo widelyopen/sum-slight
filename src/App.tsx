@@ -6,6 +6,7 @@ import { Terminal } from './apps/Terminal'
 import { Files } from './apps/Files'
 import { Music } from './apps/Music'
 import { Settings } from './apps/Settings'
+import { AppIcon } from './icons'
 
 const VIEW: Record<AppId, () => JSX.Element> = { terminal: Terminal, files: Files, music: Music, settings: Settings }
 const ids = Object.keys(APPS) as AppId[]
@@ -41,9 +42,9 @@ function Window({ w }: { w: Win }) {
       style={{ left: w.x, top: w.y, width: w.w, height: w.h, zIndex: w.z, pointerEvents: w.min ? 'none' : 'auto' }}
       initial={{ opacity: 0, scale: 0.92 }} animate={w.min ? { opacity: 0, scale: 0.85, y: 120 } : { opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.92 }} transition={{ duration: 0.15 }}
-      className={`absolute flex flex-col overflow-hidden rounded-xl border backdrop-blur-xl ${on ? 'shadow-2xl' : 'shadow-md'} ${dark ? 'border-white/10 bg-zinc-900/90 text-zinc-100' : 'border-black/10 bg-white/90 text-zinc-900'}`}>
+      className={`absolute flex flex-col overflow-clip rounded-xl border backdrop-blur-xl ${on ? 'shadow-2xl' : 'shadow-md'} ${dark ? 'border-white/10 bg-zinc-900/90 text-zinc-100' : 'border-black/10 bg-white/90 text-zinc-900'}`}>
       <div onPointerDown={drag} onDoubleClick={() => toggleMax(w.id)} className="flex h-9 shrink-0 items-center gap-2 px-3 text-sm" style={on ? { borderBottom: `2px solid ${accent}` } : { borderBottom: '2px solid transparent' }}>
-        <span>{APPS[w.app].icon}</span><span className="flex-1 truncate">{APPS[w.app].title}</span>
+        <AppIcon app={w.app} size={18} /><span className="flex-1 truncate">{APPS[w.app].title}</span>
         <button className="px-2 hover:opacity-60" onClick={() => minimize(w.id)}>–</button>
         <button className="px-2 hover:opacity-60" onClick={() => toggleMax(w.id)}>{w.max ? '❐' : '□'}</button>
         <button className="px-2 hover:text-red-400" onClick={() => close(w.id)}>✕</button>
@@ -73,11 +74,11 @@ function Taskbar() {
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(t) }, [])
   return (
     <div style={{ height: TASKBAR, zIndex: 9000 }} className="absolute inset-x-0 bottom-0 flex items-center gap-1 border-t border-white/10 bg-black/60 px-2 text-white backdrop-blur-xl">
-      <button onPointerDown={(e) => e.stopPropagation()} onClick={() => setStart(!start)} className="rounded-lg px-3 py-1.5 text-lg hover:bg-white/10" style={start ? { background: accent } : {}}>⊞</button>
+      <button onPointerDown={(e) => e.stopPropagation()} onClick={() => setStart(!start)} className="rounded-lg px-3 py-2 hover:bg-white/10" style={start ? { background: accent } : {}}><svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor"><rect width="8" height="8" rx="2" /><rect x="10" width="8" height="8" rx="2" /><rect y="10" width="8" height="8" rx="2" /><rect x="10" y="10" width="8" height="8" rx="2" /></svg></button>
       {wins.map((w) => (
         <button key={w.id} onClick={() => (focused === w.id && !w.min ? minimize(w.id) : focus(w.id))}
           className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm hover:bg-white/10" style={{ borderBottom: `2px solid ${w.min ? 'transparent' : accent}` }}>
-          {APPS[w.app].icon}<span className="hidden sm:inline">{APPS[w.app].title}</span></button>
+          <AppIcon app={w.app} size={20} /><span className="hidden sm:inline">{APPS[w.app].title}</span></button>
       ))}
       <div className="ml-auto px-3 text-xs">{now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}<br />{now.toLocaleDateString()}</div>
     </div>
@@ -99,11 +100,11 @@ export default function App() {
   }, [setBsod])
 
   return (
-    <div className="relative h-full w-full overflow-hidden" style={{ background: WALLS[wall] }} onPointerDown={() => setStart(false)}>
+    <div className="relative h-full w-full overflow-clip" style={{ background: WALLS[wall] }} onPointerDown={() => setStart(false)}>
       <div className="absolute top-3 left-3 flex flex-col gap-2">
         {ids.map((a) => (
           <button key={a} onDoubleClick={() => open(a)} className="flex w-20 flex-col items-center gap-1 rounded-lg p-2 text-xs text-white hover:bg-white/15">
-            <span className="text-3xl drop-shadow">{APPS[a].icon}</span>{APPS[a].title}</button>
+            <AppIcon app={a} size={44} />{APPS[a].title}</button>
         ))}
       </div>
       <AnimatePresence>{wins.map((w) => <Window key={w.id} w={w} />)}</AnimatePresence>
@@ -111,7 +112,7 @@ export default function App() {
         {start && (
           <motion.div onPointerDown={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
             style={{ bottom: TASKBAR + 8, zIndex: 9500 }} className="absolute left-2 w-64 rounded-xl border border-white/10 bg-black/70 p-2 text-white backdrop-blur-xl">
-            {ids.map((a) => <button key={a} onClick={() => open(a)} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10">{APPS[a].icon} {APPS[a].title}</button>)}
+            {ids.map((a) => <button key={a} onClick={() => open(a)} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10"><AppIcon app={a} size={22} /> {APPS[a].title}</button>)}
             <button onClick={() => { setStart(false); setBsod(true) }} className="mt-1 w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10" style={{ color: accent }}>⏻ Restart</button>
           </motion.div>
         )}

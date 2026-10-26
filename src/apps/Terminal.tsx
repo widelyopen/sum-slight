@@ -32,8 +32,8 @@ export function Terminal() {
   const [hist, setHist] = useState<string[]>([])
   const [hi, setHi] = useState(-1)
   const [rain, setRain] = useState(false)
-  const end = useRef<HTMLDivElement>(null)
-  useEffect(() => end.current?.scrollIntoView(), [lines])
+  const box = useRef<HTMLDivElement>(null)
+  useEffect(() => { const b = box.current; if (b) b.scrollTop = b.scrollHeight }, [lines])
 
   const home = cwd.length === 2 && cwd[0] === 'home' && cwd[1] === 'user'
   const prompt = `user@fakeos:${home ? '~' : '/' + cwd.join('/')}$`
@@ -87,7 +87,8 @@ export function Terminal() {
     setInp(''); setHi(-1)
     if (l.trim()) setHist((h) => [l, ...h])
     if (l.trim() === 'clear') return setLines([])
-    setLines((x) => [...x, `${prompt} ${l}`, ...run(l)])
+    const out = run(l)
+    setLines((x) => [...x, `${prompt} ${l}`, ...out])
   }
 
   const key = (e: React.KeyboardEvent) => {
@@ -98,13 +99,12 @@ export function Terminal() {
   }
 
   return (
-    <div className="relative h-full overflow-auto bg-black/80 p-3 font-mono text-sm text-green-400" onClick={() => document.getElementById('term-in')?.focus()}>
+    <div ref={box} className="relative h-full overflow-auto bg-black/80 p-3 font-mono text-sm text-green-400" onClick={() => document.getElementById('term-in')?.focus()}>
       {rain && <Matrix stop={() => setRain(false)} />}
       <pre className="whitespace-pre-wrap">{lines.join('\n')}</pre>
       <div className="flex gap-2"><span>{prompt}</span>
         <input id="term-in" autoFocus value={inp} onChange={(e) => setInp(e.target.value)} onKeyDown={key}
           className="flex-1 bg-transparent outline-none" spellCheck={false} autoComplete="off" /></div>
-      <div ref={end} />
     </div>
   )
 }
