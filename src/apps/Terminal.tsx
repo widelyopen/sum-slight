@@ -99,7 +99,7 @@ export function Terminal() {
   }
 
   return (
-    <div ref={box} className="relative h-full overflow-auto bg-black/80 p-3 font-mono text-sm text-green-400" onClick={() => document.getElementById('term-in')?.focus()}>
+    <div ref={box} className="relative h-full overflow-auto bg-[#16181b] p-3 font-mono text-[13px] text-zinc-300" onClick={() => document.getElementById('term-in')?.focus()}>
       {rain && <Matrix stop={() => setRain(false)} />}
       <pre className="whitespace-pre-wrap">{lines.join('\n')}</pre>
       <div className="flex gap-2"><span>{prompt}</span>

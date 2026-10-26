@@ -13,7 +13,7 @@ const ids = Object.keys(APPS) as AppId[]
 
 function Window({ w }: { w: Win }) {
   const { focus, close, minimize, toggleMax, set, snap, focused } = useOS()
-  const { dark, accent } = useCfg()
+  const { dark } = useCfg()
   const View = VIEW[w.app]
   useEffect(() => { beep(660); return () => beep(330) }, [])
 
@@ -42,8 +42,8 @@ function Window({ w }: { w: Win }) {
       style={{ left: w.x, top: w.y, width: w.w, height: w.h, zIndex: w.z, pointerEvents: w.min ? 'none' : 'auto' }}
       initial={{ opacity: 0, scale: 0.92 }} animate={w.min ? { opacity: 0, scale: 0.85, y: 120 } : { opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.92 }} transition={{ duration: 0.15 }}
-      className={`absolute flex flex-col overflow-clip rounded-xl border backdrop-blur-xl ${on ? 'shadow-2xl' : 'shadow-md'} ${dark ? 'border-white/10 bg-zinc-900/90 text-zinc-100' : 'border-black/10 bg-white/90 text-zinc-900'}`}>
-      <div onPointerDown={drag} onDoubleClick={() => toggleMax(w.id)} className="flex h-9 shrink-0 items-center gap-2 px-3 text-sm" style={on ? { borderBottom: `2px solid ${accent}` } : { borderBottom: '2px solid transparent' }}>
+      className={`absolute flex flex-col overflow-clip rounded-md border ${on ? 'shadow-xl shadow-black/40' : 'shadow shadow-black/30'} ${dark ? 'border-[#383c43] bg-[#23262b] text-zinc-200' : 'border-zinc-300 bg-[#f2f2f0] text-zinc-800'}`}>
+      <div onPointerDown={drag} onDoubleClick={() => toggleMax(w.id)} className={`flex h-8 shrink-0 items-center gap-2 px-3 text-[13px] ${on ? '' : 'opacity-60'}`} style={{ borderBottom: '1px solid color-mix(in srgb, currentColor 14%, transparent)' }}>
         <AppIcon app={w.app} size={18} /><span className="flex-1 truncate">{APPS[w.app].title}</span>
         <button className="px-2 hover:opacity-60" onClick={() => minimize(w.id)}>–</button>
         <button className="px-2 hover:opacity-60" onClick={() => toggleMax(w.id)}>{w.max ? '❐' : '□'}</button>
@@ -73,7 +73,7 @@ function Taskbar() {
   const [now, setNow] = useState(new Date())
   useEffect(() => { const t = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(t) }, [])
   return (
-    <div style={{ height: TASKBAR, zIndex: 9000 }} className="absolute inset-x-0 bottom-0 flex items-center gap-1 border-t border-white/10 bg-black/60 px-2 text-white backdrop-blur-xl">
+    <div style={{ height: TASKBAR, zIndex: 9000 }} className="absolute inset-x-0 bottom-0 flex items-center gap-1 border-t border-[#2e3136] bg-[#1b1d21] px-2 text-zinc-200">
       <button onPointerDown={(e) => e.stopPropagation()} onClick={() => setStart(!start)} className="rounded-lg px-3 py-2 hover:bg-white/10" style={start ? { background: accent } : {}}><svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor"><rect width="8" height="8" rx="2" /><rect x="10" width="8" height="8" rx="2" /><rect y="10" width="8" height="8" rx="2" /><rect x="10" y="10" width="8" height="8" rx="2" /></svg></button>
       {wins.map((w) => (
         <button key={w.id} onClick={() => (focused === w.id && !w.min ? minimize(w.id) : focus(w.id))}
@@ -111,7 +111,7 @@ export default function App() {
       <AnimatePresence>
         {start && (
           <motion.div onPointerDown={(e) => e.stopPropagation()} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-            style={{ bottom: TASKBAR + 8, zIndex: 9500 }} className="absolute left-2 w-64 rounded-xl border border-white/10 bg-black/70 p-2 text-white backdrop-blur-xl">
+            style={{ bottom: TASKBAR + 8, zIndex: 9500 }} className="absolute left-2 w-64 rounded-md border border-[#383c43] bg-[#23262b] p-2 text-zinc-200">
             {ids.map((a) => <button key={a} onClick={() => open(a)} className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10"><AppIcon app={a} size={22} /> {APPS[a].title}</button>)}
             <button onClick={() => { setStart(false); setBsod(true) }} className="mt-1 w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/10" style={{ color: accent }}>⏻ Restart</button>
           </motion.div>

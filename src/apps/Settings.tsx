@@ -16,8 +16,8 @@ export function Settings() {
             className={`h-8 w-8 rounded-full border-2 ${c.accent === a ? 'border-white' : 'border-transparent'}`} />)}
           <input type="color" value={c.accent} onChange={(e) => c.patch({ accent: e.target.value })} className="h-8 w-8 bg-transparent" />
         </div></section>
-      <div className={row}><span>Dark theme</span><button className="rounded-full px-4 py-1 text-white" style={{ background: c.accent }} onClick={() => c.patch({ dark: !c.dark })}>{c.dark ? 'On' : 'Off'}</button></div>
-      <div className={row}><span>UI sounds</span><button className="rounded-full px-4 py-1 text-white" style={{ background: c.accent }} onClick={() => { c.patch({ sound: !c.sound }); beep() }}>{c.sound ? 'On' : 'Off'}</button></div>
+      <div className={row}><span>Dark theme</span><button className="rounded px-3 py-1 text-white" style={{ background: c.accent }} onClick={() => c.patch({ dark: !c.dark })}>{c.dark ? 'On' : 'Off'}</button></div>
+      <div className={row}><span>UI sounds</span><button className="rounded px-3 py-1 text-white" style={{ background: c.accent }} onClick={() => { c.patch({ sound: !c.sound }); beep() }}>{c.sound ? 'On' : 'Off'}</button></div>
     </div>
   )
 }

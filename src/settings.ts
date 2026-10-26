@@ -2,18 +2,18 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 export const WALLS = [
-  'linear-gradient(135deg,#0f172a,#312e81,#7c3aed)',
-  'linear-gradient(135deg,#022c22,#0f766e,#84cc16)',
-  'linear-gradient(135deg,#1c1917,#9a3412,#fbbf24)',
-  'linear-gradient(135deg,#020617,#0c4a6e,#22d3ee)',
-  'radial-gradient(circle at 30% 20%,#f472b6,#4c1d95 60%,#0b0b1a)',
+  '#1e2127',
+  'linear-gradient(170deg,#2a2e35,#181a1e)',
+  '#2b3532',
+  '#30343c',
+  '#34302d',
 ]
-export const ACCENTS = ['#7c3aed', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899']
+export const ACCENTS = ['#5b7fa6', '#7a9a7e', '#b08968', '#9a6f7a', '#8a8f98', '#6b8f9c']
 
 interface Cfg { wall: number; accent: string; dark: boolean; sound: boolean; patch: (p: Partial<Cfg>) => void }
 export const useCfg = create<Cfg>()(persist(
   (set) => ({ wall: 0, accent: ACCENTS[0], dark: true, sound: true, patch: (p) => set(p) }),
-  { name: 'fakeos-settings' },
+  { name: 'fakeos-settings-v2' },
 ))
 
 let ctx: AudioContext | null = null
